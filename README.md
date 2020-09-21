@@ -20,3 +20,5 @@ This small utility is an extension to unix "cd" command. Provide additional feat
 16. CD - most/less frequent - similar to z
 17. CD HISTORY MAINTENANCE
 18. CD Learn, Lock and Unlock - ask cd to understand a directory structure and navigate inside that directory structure only.
+19. get inside a container, pod
+
