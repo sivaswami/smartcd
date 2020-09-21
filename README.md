@@ -14,7 +14,7 @@ This small utility is an extension to unix "cd" command. Provide additional feat
 10. CD lastModified Directory
 11. CD case insensitive
 12. SYMBOLIC LINKS
-13. tinydir
+13. tinydir - Shorten your folder path with environment variables : example: /home/sivaswami/test => $HOME/test
 14. CD USER BINS
 15. CD - Restricted Root CD
 16. CD - most/less frequent - similar to z
