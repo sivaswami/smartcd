@@ -1,0 +1,104 @@
+#!/usr/bin/env python
+#==========================================================================
+# File            : tinydir
+# Description     :
+# @(#)
+#/bin/env python
+#
+# Revision History:
+#
+#   18 Oct 2017 - sijegana
+#      Initial Version.
+#==========================================================================
+import os, sys
+import re
+import psutil
+import argparse
+
+# SMART CD Program
+# 1. CD as Root
+# 2. CD as Different User
+# 3. CD to Previous folder in path
+# 4. CD to Sub Folder
+# 5. CD PID
+# 6. CD History Paths
+# 7. CD SystemPaths - Downloads, Desktop, Temp, /usr/bin, /bin, etc
+# 8. CD PATH, CDPATH, CLASSPATH, Running Programs PATHs
+# 9. CD lastAccessedDirectory 
+# 10. CD lastModified Directory
+# 11. CD case insensitive
+# 12. SYMBOLIC LINKS
+# 13. tinydir
+# 14. CD USER BINS
+# 15. CD - Restricted Root CD
+# 16. CD - most/less frequent - similar to z
+# 17. CD HISTORY MAINTENANCE
+# 18. CD Learn, Lock and Unlock - ask cd to understand a directory structure and navigate inside that directory structure only.
+
+#CurrUser, Machine name, Login User, Full Path, Date time
+
+def cdPid(pid):
+    if psutil.pid_exists(pid):
+        p = psutil.Process(pid)
+        return p.cwd()
+    else:
+        print("PID " + pid + " doesn't exists")
+        return os.getcwd()
+
+def cdUser():
+    pass
+
+def cdRoot():
+    pass
+
+def cdHistory():
+    pass
+
+
+def PartOfPath(curPath, newFolder):
+    originalPath = os.path.normpath(curPath)
+    curpath = os.path.normpath(curPath)
+    newPath =  curpath.split(newFolder)[0] + "/" + newFolder
+    newPath = re.sub(r"//",r"/", newPath)
+    return newPath
+
+
+
+def folderShortener(curpath):
+    originalPath = os.path.normpath(curpath)
+    curpath = os.path.normpath(curpath)
+    folderMap = {
+        val: key.replace(os.path.sep + os.path.sep, os.path.sep)
+        for (key, val) in os.environ.items() if os.path.sep in val
+        and os.path.pathsep not in val and "PWD" not in key
+    }
+    #for (key,val) in folderMap.items():
+    #    print(val + "=>" + key)
+    #curpath=os.getcwd()
+    remainingPath = ""
+    x = ""
+    while (curpath != "~" and curpath != "/" and curpath not in folderMap):
+        remainingPath = os.path.basename(curpath) + x
+        curpath = os.path.dirname(curpath)
+        x = os.path.sep + remainingPath
+    if (curpath != "~" and curpath != "/"):
+        curpath = folderMap.get(curpath)
+        if (curpath is not None):
+            return ("$" + curpath + x)
+        else:
+            return x
+    else:
+        return originalPath
+
+
+if len(sys.argv) < 2:
+    pwd = os.getcwd()
+else:
+    pwd = sys.argv[1]
+homedir = os.path.expanduser('~')
+pwd = pwd.replace(homedir, '~', 1)
+#pwd=os.path.abspath(pwd)
+pwd = folderShortener(pwd)
+if len(pwd) > 45:
+    pwd = pwd[:20] + '...' + pwd[-25:]  # first 10 chars+last 20 chars
+print('%s' % pwd)
